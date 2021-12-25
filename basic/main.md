@@ -5,6 +5,7 @@ _class: lead
 backgroundColor: #fff
 backgroundImage: url('https://marp.app/assets/hero-background.svg')
 ---
+
 # Introduction to basic Arduino programming techniques
 
 https://basic.idp.michaellee8.com
@@ -12,6 +13,7 @@ https://basic.idp.michaellee8.com
 Source code: https://github.com/michaellee8/idp-public-notes
 
 ---
+
 <!-- paginate: true -->
 
 # Assumptions
@@ -22,6 +24,7 @@ Source code: https://github.com/michaellee8/idp-public-notes
 - Has learnt basic interaction with Arduino sensors.
 
 ---
+
 # Topics
 
 - Arduino's programming model
@@ -32,6 +35,7 @@ Source code: https://github.com/michaellee8/idp-public-notes
 - Basic debugging skills
 
 ---
+
 # Basic vs Advanced
 
 Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots of very useful but not essential stuffs there.
@@ -41,6 +45,7 @@ Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots o
 - Those suggestions will be tagged with :star:.
 
 ---
+
 # Arduino's programming model
 
 [![bg left:25% 60%](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzZXR1cFtzZXR1cF1cbiAgICBsb29wW2xvb3BdXG5cbiAgICBzZXR1cCAtLT4gbG9vcFxuICAgIGxvb3AgLS0-IGxvb3BcbiAgIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)](https://mermaid-js.github.io/mermaid-live-editor/edit#eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzZXR1cFtzZXR1cF1cbiAgICBsb29wW2xvb3BdXG5cbiAgICBzZXR1cCAtLT4gbG9vcFxuICAgIGxvb3AgLS0-IGxvb3BcbiAgIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0)
@@ -50,17 +55,21 @@ Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots o
 - Share variables between `setup()` and `loop()` by making them global variable. :star:
 
 ---
+
 # Basic code organization
 
 - Seperate big trunks of code for different tasks into different functions.
 - Use global variables for sharing data between functions. :star:
 - Define constants for hard-coded numbers used in the program, don't put them directly code, for easier tuning later.
 - Log sensor values, program state and motor output for easier debugging.
--  Write verbosive comments when you think you need it. More is better.
+- Write verbosive comments when you think you need it. More is better.
+
 ---
+
 Seperating tasks
 
 ---
+
 ```cpp
 void readUltrasonicSensorValues(){
   // Read sensor values here
@@ -82,9 +91,11 @@ void loop(){
 ```
 
 ---
+
 Global variables and Constants
 
 ---
+
 ```cpp
 const float STOP_SENSOR_DISTANCE = 20.0;
 const int MOTOR_PIN = A4;
@@ -103,7 +114,9 @@ void readSerialInput(){
   shouldContinue = xxx;
 }
 ```
+
 ---
+
 ```cpp
 void determineWhatToDo(){
   if (sensorDistance <= STOP_SENSOR_DISTANCE && shouldContinue){
@@ -125,7 +138,9 @@ void loop(){
   writeLogToSerial();
 }
 ```
+
 ---
+
 ```cpp
 const float STOP_SENSOR_DISTANCE = 20.0;
 const float RUN_SENSOR_DISTANCE = 60.0;
@@ -142,9 +157,29 @@ enum class ProgramState : char { // Only integral type like int or char is allow
   TOO_CLOSE = "C",
   STOPPED_BY_SERIAL = "S"
 };
+
+void writeLogToSerial(){
+  // Log current program state to serial input here.
+  // Note that Serial output can block if the output buffer is full! Will introduce some techniques to deal with it later.
+  // Fow now we only write if the buffer is not full. If the buffer is not full but still doesn't have enough space it still blocks.
+  if (Serial.availableForWrite() > 0){
+    Serial.print(',');
+    Serial.print(motorSpeed);
+    Serial.print(currentState);
+    Serial.print(',');
+    Serial.print(motorSpeed);
+    Serial.print(',');
+    Serial.print(sensorDistance);
+    Serial.print(',');
+    Serial.print(shouldContinue);
+    Serial.println();
+  }
+}
+
 ```
 
 ---
+
 ```cpp
 void determineWhatToDo(){
   if (!shouldContinue){
@@ -152,11 +187,21 @@ void determineWhatToDo(){
     currentState = ProgramState::STOPPED_BY_SERIAL;
     return;
   }
+  if (sensorDistance > RUN_SENSOR_DISTANCE){
+    motorSpeed = 200;
+    currentState = ProgramState::RUNNING;
+    return;
+  }
+  if (sensorDistance > STOP_SENSOR_DISTANCE){
+    motorSpeed = 100;
+    currentSpeed = ProgramState::MOVING;
+    return;
+  }
+  motorSpeed = 0;
+  currentSpeed = ProgramState::TOO_CLOSE;
+  return;
 }
 
-void writeLogToSerial(){
-  // Log current program state to serial input here.
-}
 
 void loop(){
   readUltrasonicSensorValues();
@@ -165,6 +210,7 @@ void loop(){
   writeLogToSerial();
 }
 ```
+
 ---
 
 ![bg left:40% 80%](https://marp.app/assets/marp.svg)
