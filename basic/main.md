@@ -335,3 +335,9 @@ https://google.github.io/styleguide/cppguide.html#Variable_Names
 - Some sensors has pretty large error margins (e.g. ultrasonic sensors).
 - Just one measurement may get you a wrong value.
 - Solution: Take measurements from the sensor multiple times, sort the values, and then take the average of the middle values.
+- Let's use [`qsort()`](https://www.nongnu.org/avr-libc/user-manual/group__avr__stdlib.html#gafd4bf2faec43342e7ad3d2ab37bac1fe) to do it.
+
+---
+```c++
+
+```
