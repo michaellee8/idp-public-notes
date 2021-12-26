@@ -140,6 +140,9 @@ void loop(){
 ```
 
 ---
+Program state and logging
+
+---
 
 ```cpp
 const float STOP_SENSOR_DISTANCE = 20.0;
@@ -238,3 +241,6 @@ foobar
 
 foobar
 ```
+
+https://llvm.org/docs/CodingStandards.html#name-types-functions-variables-and-enumerators-properly
+https://google.github.io/styleguide/cppguide.html#Variable_Names
