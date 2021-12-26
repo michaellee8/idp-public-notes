@@ -215,32 +215,106 @@ void loop(){
 ```
 
 ---
+# Coding conventions
 
-![bg left:40% 80%](https://marp.app/assets/marp.svg)
-
-# **Marp**
-
-Markdown Presentation Ecosystem
-
-https://marp.app/
-
----
-
-# How to write slides
-
-Split pages by horizontal ruler (`---`). It's very simple! :satisfied:
-
-```markdown
-# Slide 1
-
-foobar
+- Document what you are doing with comments for each function (intentions) if it is not obvious.
+- Don't repeat code (actual logic) with comments.
+- Adapt a consistent naming style.
+- Rember to put indentions properly. :star:
+- Use verbs for functions, and nouns for variables and classes.
+- Give meaningful names, e.g. `i` vs `motorIndex`.
 
 ---
+- Avoid using pointers (pass by reference instead). Arduino has very limited memories (8KB) so dynamic memory allocation can caused memory leakages. Also there are no OOM on Arduino, you won't know what broke your program. Hence prefer allocate on stack rather than heap. (There are also tools for analysing memory usages but obvously won't work with `new` or `malloc()` :star:.).
+- Use containers if you really need dynamic memory array like the built-in `String` or `Array`/`Vector` libraries.
+- Don't use exceptions (`throw`) (there are no exceptions in Arduino anyway).
+- You MAY want to use early return to code branches to achieve cleaner code. See the `determineWhatToDo()` example above.
 
-# Slide 2
+---
+## Suggested style guide
 
-foobar
+- Adapted from [Google C++ style guide](
+https://google.github.io/styleguide/cppguide.html#Variable_Names).
+- Modified to match existing conventions in the arduino ecosystem.
+- You don't have to follow this, just make sure it is consistent across your group members' code.
+
+---
+### Formatting
+
+- 2 spaces for each level.
+- Don't use tabs.
+- Each line should not exceed 80 chars.
+- Use clang-format :star:.
+- Namespaces doesn't need indentions.
+
+---
+### Naming
+
+- Make sure the naming will be understandable even read by people not in your group.
+
+---
+- Use CamelCase for class, structs and types
+
+```c++
+TimedState
+BluetoothController
+UrlParaser
+I2cImpl
 ```
+
+---
+- Use camelCase for function names, the first word should be a verb ideally.
+
+```c++
+readUltrasonicSensorValues();
+readSerialInput();
+determineWhatToDo();
+writeLogToSerial();
+getNextInput();
+setMotorSpeed();
+```
+
+---
+- For functions parameters, global variables, function local variables and struct member variables, use snake_case.
+
+```c++
+float convertToFloat(int num){
+  bool is_positive;
+}
+```
+
+---
+- For both static and instance class member variables, use snake_case with underscore (snake_case_).
+- Useful for differentiating between local variables and class member variables.
+
+---
+```c++
+class TimedState : public State {
+ protected:
+  bool is_entered_ = false;
+
+ public:
+  TimedState(unsigned long period);
+  void forceEnter() override;
+};
+
+TimedState::TimedState(unsigned long period) : period_(period) {}
+
+void TimedState::forceEnter() {
+  is_entered_ = true;
+  timestamp_ = millis();
+}
+```
+
+---
+- User snake_case for namespaces.
+
+```c++
+namespace timed_state;
+```
+
+---
+Some references
 
 https://llvm.org/docs/CodingStandards.html#name-types-functions-variables-and-enumerators-properly
 https://google.github.io/styleguide/cppguide.html#Variable_Names
