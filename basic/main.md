@@ -307,10 +307,20 @@ void TimedState::forceEnter() {
 ```
 
 ---
-- User snake_case for namespaces.
+- Use snake_case for namespaces.
 
 ```c++
 namespace timed_state;
+```
+
+---
+- Use capital letter with underscores for macros.
+- Avoid use of macros.
+- Some constants in the arduino ecosystem are defined using macros, follow macros conventions to name them if you have a reason to use one. However, you 
+
+```c++
+#define ROUND(x) ...
+#define PI_ROUNDED 3.0
 ```
 
 ---
@@ -318,3 +328,10 @@ Some references
 
 https://llvm.org/docs/CodingStandards.html#name-types-functions-variables-and-enumerators-properly
 https://google.github.io/styleguide/cppguide.html#Variable_Names
+
+---
+# Sampling
+
+- Some sensors has pretty large error margins (e.g. ultrasonic sensors).
+- Just one measurement may get you a wrong value.
+- Solution: Take measurements from the sensor multiple times, sort the values, and then take the average of the middle values.
