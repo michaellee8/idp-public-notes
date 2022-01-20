@@ -376,3 +376,64 @@ int lessThanUul(const void* p1, const void* p2){
   return 0;
 }
 ```
+
+---
+# Non-blocking control
+
+---
+## What is delay()?
+
+- Stops the execution of the Arduino program for the specified period.
+- No sensors can be measured.
+
+---
+## Simple scenario
+
+Car goes forward for 10 seconds, but stop if sense an obstacle.
+
+---
+## Stopping conditions
+
+- 10 seconds passed.
+
+Or
+
+- Unltrasonic sensor sense an obstacle closed than 5cm.
+
+---
+## Implementation 1
+
+```c++
+bool isRunning = true;
+void loop() {
+  if (isRunning){
+    setMotorSpeed(100);
+    delay(10 * 1000); // 10 * 1000 milliseconds
+  }
+  if (mesaureSensorDistance() < 5.0){
+    isRunning = false;
+  } else {
+    isRunning = true;
+  }
+
+}
+```
+
+---
+## Implementation 1
+
+- The car will run for 10 seconds without stopping.
+- Probably have crashed to the obstacle already without having chance to run sensor measurement.
+
+<insert video here>
+
+---
+## Implementation 2
+
+```c++
+bool isRunning = true;
+const int STOP_TIME = 10 * 1000;
+void loop(){
+  void 
+}
+```
