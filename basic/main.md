@@ -334,10 +334,45 @@ https://google.github.io/styleguide/cppguide.html#Variable_Names
 
 - Some sensors has pretty large error margins (e.g. ultrasonic sensors).
 - Just one measurement may get you a wrong value.
-- Solution: Take measurements from the sensor multiple times, sort the values, and then take the average of the middle values.
+- Solution: Take measurements from the sensor multiple times, sort the values, and then take the median.
 - Let's use [`qsort()`](https://www.nongnu.org/avr-libc/user-manual/group__avr__stdlib.html#gafd4bf2faec43342e7ad3d2ab37bac1fe) to do it.
 
 ---
 ```c++
+#define SAMPLE_SIZE 5
+// Using macro-based constants here since we need this constant to define array size.
 
+const int SONIC_ECHO_PIN = A10;
+const int SONIC_TRIG_PIN = A11;
+
+unsigned long measureSensorDurationOnce(){
+  digitalWrite(SONIC_TRIG_PIN, LOW);
+  delayMicroseconds(5);
+  digitalWrite(SONIC_TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(SONIC_TRIG_PIN, LOW);
+  return pulseIn(SONIC_TRIG_PIN);
+}
+
+float mesaureSensorDistanceWithSampling(){
+  unsigned long durations[SAMPLE_SIZE];
+  for (int i = 0; i < SAMPLE_SIZE; i++){
+    durations[i] = measureSensorDurationOnce();
+  }
+  qsort((void*)durations, SAMPLE_SIZE, sizeof(unsigned long), lessThanUul);
+  unsigned long duration = durations[SAMPLE_SIZE / 2];
+  return duration / 2.0 / 29.1;
+}
+
+int lessThanUul(const void* p1, const void* p2){
+  unsigned long n1 = *((unsigned long*)p1);
+  unsigned long n2 = *((unsigned long*)p2);
+  if (n1 < n2){
+    return -1;
+  }
+  if (n1 > n2){
+    return 1;
+  }
+  return 0;
+}
 ```
