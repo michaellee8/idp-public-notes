@@ -316,11 +316,20 @@ namespace timed_state;
 ---
 - Use capital letter with underscores for macros.
 - Avoid use of macros.
-- Some constants in the arduino ecosystem are defined using macros, follow macros conventions to name them if you have a reason to use one. However, you 
+- Some constants in the arduino ecosystem are defined using macros, follow macros conventions to name them if you have a reason to use one. However, you better use `const` style constants since it provice better type checking.
 
 ```c++
 #define ROUND(x) ...
 #define PI_ROUNDED 3.0
+```
+
+---
+- Use `SNAKE_CASE`, which is capital letter with underscores for constants.
+- Some style guide wuggested otherwise, but I would have suggested using `SNAKE_CASE` since this is the convention in the Arduino ecosystem.
+
+```c++
+const int BUTTON_PIN = 4;
+const float distance = 40.0;
 ```
 
 ---
