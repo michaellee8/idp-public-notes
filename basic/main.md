@@ -403,4 +403,5 @@ Blinks the LED if the button is pressed, otherwise turn the LED off.
 
 ![](assets/non-blocking-example-circuit.png)
 
+
 ---
