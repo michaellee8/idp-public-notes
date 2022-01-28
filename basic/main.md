@@ -394,55 +394,13 @@ int lessThanUul(const void* p1, const void* p2){
 
 - Stops the execution of the Arduino program for the specified period.
 - No sensors can be measured.
+- You can only "do one thing" with it.
 
 ---
 ## Simple scenario
 
-Car goes forward for 10 seconds, but stop if sense an obstacle.
+Blinks the LED if the button is pressed, otherwise turn the LED off.
+
+![](assets/non-blocking-example-circuit.png)
 
 ---
-## Stopping conditions
-
-- 10 seconds passed.
-
-Or
-
-- Unltrasonic sensor sense an obstacle closed than 5cm.
-
----
-## Implementation 1
-
-```c++
-bool isRunning = true;
-void loop() {
-  if (isRunning){
-    setMotorSpeed(100);
-    delay(10 * 1000); // 10 * 1000 milliseconds
-  }
-  if (mesaureSensorDistance() < 5.0){
-    isRunning = false;
-  } else {
-    isRunning = true;
-  }
-
-}
-```
-
----
-## Implementation 1
-
-- The car will run for 10 seconds without stopping.
-- Probably have crashed to the obstacle already without having chance to run sensor measurement.
-
-<insert video here>
-
----
-## Implementation 2
-
-```c++
-bool isRunning = true;
-const int STOP_TIME = 10 * 1000;
-void loop(){
-  void 
-}
-```
