@@ -404,3 +404,32 @@ Blinks the LED if the button is pressed, otherwise turn the LED off.
 ![](assets/non-blocking-example-circuit.png)
 
 ---
+Let's try doing one thing only first.
+
+---
+### Button only
+
+Turn the LED on if the button is pressed, otherwise turn it off.
+
+```c++
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int buttonValue = digitalRead(BUTTON_PIN);
+  digitalWrite(LED_PIN, !buttonValue);
+}
+```
+
+---
+Result
+
+<video src="assets/button-only.mp4" controls></video>
+
+---
