@@ -548,6 +548,14 @@ Analysis
 ---
 Analysis
 
-- 
+- If the button is released during the second `delay(1000);` call, then the `digitalWrite(LED_PIN, HIGH);` line would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after 1 second.
+- A graph will be displayed below to provide you with a better illustraion if you hate text.
 
 ---
+Program flowchart
+
+[![bg contain 90%](https://mermaid.ink/img/pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)](https://mermaid.live/edit#pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)
+
+---
+Program flow when the button was initally released, and started being pressed during the first `delay(1000)`
+
