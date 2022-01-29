@@ -140,6 +140,7 @@ void loop(){
 ```
 
 ---
+
 Program state and logging
 
 ---
@@ -215,6 +216,7 @@ void loop(){
 ```
 
 ---
+
 # Coding conventions
 
 - Document what you are doing with comments for each function (intentions) if it is not obvious.
@@ -225,20 +227,22 @@ void loop(){
 - Give meaningful names, e.g. `i` vs `motorIndex`.
 
 ---
+
 - Avoid using pointers (pass by reference instead). Arduino has very limited memories (8KB) so dynamic memory allocation can caused memory leakages. Also there are no OOM on Arduino, you won't know what broke your program. Hence prefer allocate on stack rather than heap. (There are also tools for analysing memory usages but obvously won't work with `new` or `malloc()` :star:.).
 - Use containers if you really need dynamic memory array like the built-in `String` or `Array`/`Vector` libraries.
 - Don't use exceptions (`throw`) (there are no exceptions in Arduino anyway).
 - You MAY want to use early return to code branches to achieve cleaner code. See the `determineWhatToDo()` example above.
 
 ---
+
 ## Suggested style guide
 
-- Adapted from [Google C++ style guide](
-https://google.github.io/styleguide/cppguide.html#Variable_Names).
+- Adapted from [Google C++ style guide](https://google.github.io/styleguide/cppguide.html#Variable_Names).
 - Modified to match existing conventions in the arduino ecosystem.
 - You don't have to follow this, just make sure it is consistent across your group members' code.
 
 ---
+
 ### Formatting
 
 - 2 spaces for each level.
@@ -248,11 +252,13 @@ https://google.github.io/styleguide/cppguide.html#Variable_Names).
 - Namespaces doesn't need indentions.
 
 ---
+
 ### Naming
 
 - Make sure the naming will be understandable even read by people not in your group.
 
 ---
+
 - Use CamelCase for class, structs and types
 
 ```c++
@@ -263,6 +269,7 @@ I2cImpl
 ```
 
 ---
+
 - Use camelCase for function names, the first word should be a verb ideally.
 
 ```c++
@@ -275,6 +282,7 @@ setMotorSpeed();
 ```
 
 ---
+
 - For functions parameters, global variables, function local variables and struct member variables, use snake_case.
 
 ```c++
@@ -284,10 +292,12 @@ float convertToFloat(int num){
 ```
 
 ---
-- For both static and instance class member variables, use snake_case with underscore (snake_case_).
+
+- For both static and instance class member variables, use snake*case with underscore (snake_case*).
 - Useful for differentiating between local variables and class member variables.
 
 ---
+
 ```c++
 class TimedState : public State {
  protected:
@@ -307,6 +317,7 @@ void TimedState::forceEnter() {
 ```
 
 ---
+
 - Use snake_case for namespaces.
 
 ```c++
@@ -314,6 +325,7 @@ namespace timed_state;
 ```
 
 ---
+
 - Use capital letter with underscores for macros.
 - Avoid use of macros.
 - Some constants in the arduino ecosystem are defined using macros, follow macros conventions to name them if you have a reason to use one. However, you better use `const` style constants since it provice better type checking.
@@ -324,6 +336,7 @@ namespace timed_state;
 ```
 
 ---
+
 - Use `SNAKE_CASE`, which is capital letter with underscores for constants.
 - Some style guide wuggested otherwise, but I would have suggested using `SNAKE_CASE` since this is the convention in the Arduino ecosystem.
 
@@ -333,12 +346,14 @@ const float distance = 40.0;
 ```
 
 ---
+
 Some references
 
 https://llvm.org/docs/CodingStandards.html#name-types-functions-variables-and-enumerators-properly
 https://google.github.io/styleguide/cppguide.html#Variable_Names
 
 ---
+
 # Sampling
 
 - Some sensors has pretty large error margins (e.g. ultrasonic sensors).
@@ -347,6 +362,7 @@ https://google.github.io/styleguide/cppguide.html#Variable_Names
 - Let's use [`qsort()`](https://www.nongnu.org/avr-libc/user-manual/group__avr__stdlib.html#gafd4bf2faec43342e7ad3d2ab37bac1fe) to do it.
 
 ---
+
 ```c++
 #define SAMPLE_SIZE 5
 // Using macro-based constants here since we need this constant to define array size.
@@ -387,9 +403,11 @@ int lessThanUul(const void* p1, const void* p2){
 ```
 
 ---
+
 # Non-blocking control
 
 ---
+
 ## What is delay()?
 
 - Stops the execution of the Arduino program for the specified period.
@@ -397,6 +415,7 @@ int lessThanUul(const void* p1, const void* p2){
 - You can only "do one thing" with it.
 
 ---
+
 ## Simple scenario
 
 Blinks the LED in an one second interval if the button is pressed, otherwise turn the LED off.
@@ -404,9 +423,11 @@ Blinks the LED in an one second interval if the button is pressed, otherwise tur
 ![](assets/non-blocking-example-circuit.png)
 
 ---
+
 Let's try doing one thing only first.
 
 ---
+
 ### Button only
 
 Turn the LED on if the button is pressed, otherwise turn it off.
@@ -428,6 +449,7 @@ void loop() {
 ```
 
 ---
+
 Result
 
 https://wokwi.com/arduino/projects/322041851103150676
@@ -435,11 +457,13 @@ https://wokwi.com/arduino/projects/322041851103150676
 <video src="assets/button-only.mp4" controls autoplay muted loop playsinline></video>
 
 ---
+
 ### Blink only with delay
 
 Just Blink the LED in an one second interval only, ignore button input.
 
 ---
+
 ```c++
 const int BUTTON_PIN = 4;
 const int LED_PIN = 13;
@@ -459,6 +483,7 @@ void loop() {
 ```
 
 ---
+
 Result
 
 https://wokwi.com/arduino/projects/322079425233420882
@@ -466,11 +491,57 @@ https://wokwi.com/arduino/projects/322079425233420882
 <video src="assets/blink-delay.mp4" controls autoplay muted loop playsinline></video>
 
 ---
+
 ### Blink + Button with delay
 
 - Looks like we can do blinking with just `delay()` right?
 - But can we use button to control it if we use `delay()` only?
 - `delay()` is blocking, which means the board will no longer sensetive to changes in sensor input when it is waiting for `delay()`.
 - How would this "blocking" thing affect our implementation?
+
+---
+
+```c++
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int buttonPressed = !digitalRead(BUTTON_PIN);
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  if (buttonPressed) {
+    delay(1000);
+    digitalWrite(LED_PIN, HIGH);
+  }
+}
+
+```
+
+---
+
+Result
+
+https://wokwi.com/arduino/projects/322081256635368020
+
+<video src="assets/blink-and-button-delay.mp4" controls autoplay muted loop playsinline></video>
+
+---
+Observations
+
+- When the button starts being held, the LED starts blinking.
+- When the button is being held, the LED blinks contiuously.
+- When the button is released, the LED stills blinks for the last cycle.
+- We need the LED to stop blinking when it is turned off. The current behavior is not desirable.
+
+---
+Analysis
+
+- hh
 
 ---
