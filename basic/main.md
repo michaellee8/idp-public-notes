@@ -534,7 +534,7 @@ https://wokwi.com/arduino/projects/322081256635368020
 ---
 Observations
 
-- When the button starts being held, the LED starts blinking.
+- When the button starts being held, the LED starts blinking after a small delay.
 - When the button is being held, the LED blinks contiuously.
 - When the button is released, the LED stills blinks for the last cycle.
 - We need the LED to stop blinking when it is turned off. The current behavior is not desirable.
@@ -542,6 +542,12 @@ Observations
 ---
 Analysis
 
-- hh
+- When the `delay(1000)` function is called, the program pause without doing anything for 1 second, hence the sensor input (button) will not be read and changes will not be reflected.
+- If the button is pressed during the first `delay(1000);` call, then the `digitalWrite(LED_PIN, LOW);` line that turns off the LED will still be executed, hence the `if (buttonPressed) {` condition would still be false and the `loop()` function would return, in which the `loop()` function would be reentered again, the `buttonPressed` condition would be `true`, and the LED will be turned on after two seconds of delay.
+
+---
+Analysis
+
+- 
 
 ---
