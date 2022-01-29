@@ -468,4 +468,9 @@ https://wokwi.com/arduino/projects/322079425233420882
 ---
 ### Blink + Button with delay
 
+- Looks like we can do blinking with just `delay()` right?
+- But can we use button to control it if we use `delay()` only?
+- `delay()` is blocking, which means the board will no longer sensetive to changes in sensor input when it is waiting for `delay()`.
+- How would this "blocking" thing affect our implementation?
+
 ---
