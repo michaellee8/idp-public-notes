@@ -399,7 +399,7 @@ int lessThanUul(const void* p1, const void* p2){
 ---
 ## Simple scenario
 
-Blinks the LED if the button is pressed, otherwise turn the LED off.
+Blinks the LED in an one second interval if the button is pressed, otherwise turn the LED off.
 
 ![](assets/non-blocking-example-circuit.png)
 
@@ -432,6 +432,40 @@ Result
 
 https://wokwi.com/arduino/projects/322041851103150676
 
-<video src="assets/button-only.mp4" controls height="400"></video>
+<video src="assets/button-only.mp4" controls autoplay muted loop playsinline></video>
+
+---
+### Blink only with delay
+
+Just Blink the LED in an one second interval only, ignore button input.
+
+---
+```c++
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  delay(1000);
+  digitalWrite(LED_PIN, HIGH);
+}
+```
+
+---
+Result
+
+https://wokwi.com/arduino/projects/322079425233420882
+
+<video src="assets/blink-delay.mp4" controls autoplay muted loop playsinline></video>
+
+---
+### Blink + Button with delay
 
 ---
