@@ -2,6 +2,7 @@ import book from "../themes/book"
 import { Chart1 } from "./components/chart1.jsx"
 import { CodeSurfer } from "code-surfer"
 import { dracula } from "@code-surfer/themes"
+import { assetUrl } from "../themes/const"
 
 export const theme = { ...book, ...dracula }
 
@@ -386,7 +387,9 @@ https://google.github.io/styleguide/cppguide.html#Variable_Names
 
 ---
 
-```c++
+<CodeSurfer>
+
+```cpp
 #define SAMPLE_SIZE 5
 // Using macro-based constants here since we need this constant to define array size.
 
@@ -425,6 +428,8 @@ int lessThanUul(const void* p1, const void* p2){
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 # Non-blocking control
@@ -443,7 +448,7 @@ int lessThanUul(const void* p1, const void* p2){
 
 Blinks the LED in an one second interval if the button is pressed, otherwise turn the LED off.
 
-![](assets/non-blocking-example-circuit.png)
+<img src={assetUrl("assets/non-blocking-example-circuit.png")}/>
 
 ---
 
@@ -455,7 +460,9 @@ Let's try doing one thing only first.
 
 Turn the LED on if the button is pressed, otherwise turn it off.
 
-```c++
+<CodeSurfer>
+
+```cpp showNumbers
 const int BUTTON_PIN = 4;
 const int LED_PIN = 13;
 
@@ -471,6 +478,8 @@ void loop() {
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 Result
@@ -478,7 +487,7 @@ Result
 https://wokwi.com/arduino/projects/322041851103150676
 
 <video
-  src="assets/button-only.mp4"
+  src={assetUrl("assets/button-only.mp4")}
   controls
   autoPlay
   muted
@@ -494,7 +503,9 @@ Just Blink the LED in an one second interval only, ignore button input.
 
 ---
 
-```c++
+<CodeSurfer>
+
+```cpp showNumbers
 const int BUTTON_PIN = 4;
 const int LED_PIN = 13;
 
@@ -512,6 +523,8 @@ void loop() {
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 Result
@@ -519,7 +532,7 @@ Result
 https://wokwi.com/arduino/projects/322079425233420882
 
 <video
-  src="assets/blink-delay.mp4"
+  src={assetUrl("assets/blink-delay.mp4")}
   controls
   autoPlay
   muted
@@ -538,7 +551,9 @@ https://wokwi.com/arduino/projects/322079425233420882
 
 ---
 
-```c++
+<CodeSurfer>
+
+```cpp showNumbers
 const int BUTTON_PIN = 4;
 const int LED_PIN = 13;
 
@@ -560,6 +575,8 @@ void loop() {
 
 ```
 
+</CodeSurfer>
+
 ---
 
 Result
@@ -567,7 +584,7 @@ Result
 https://wokwi.com/arduino/projects/322081256635368020
 
 <video
-  src="assets/blink-and-button-delay.mp4"
+  src={assetUrl("assets/blink-and-button-delay.mp4")}
   controls
   autoPlay
   muted
@@ -596,7 +613,7 @@ Analysis
 Analysis
 
 - If the button is released during the second `delay(1000);` call, then the `digitalWrite(LED_PIN, HIGH);` line would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after 1 second.
-- A graph will be displayed below to provide you with a better illustraion if you hate text.
+- A graph will be provided after to provide you with a better illustraion if you hate text.
 
 ---
 

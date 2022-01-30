@@ -1,6 +1,5 @@
 const white = '#fffceb'
 const black = '#11111f'
-const blue = '#2d5dd7'
 
 export default {
   fonts: {
