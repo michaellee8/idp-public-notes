@@ -1,6 +1,9 @@
-import { book } from '@mdx-deck/themes'
+import book from "../themes/book"
+import { Chart1 } from "./components/chart1.jsx"
+import { CodeSurfer } from "code-surfer"
+import { dracula } from "@code-surfer/themes"
 
-export const theme = { ...book }
+export const theme = { ...book, ...dracula }
 
 # Introduction to basic Arduino programming techniques
 
@@ -9,6 +12,7 @@ https://basic.idp.michaellee8.com
 Source code: https://github.com/michaellee8/idp-public-notes
 
 ---
+
 # Assumptions
 
 - Expecting understanding to programming of a yr3 or yr4 CE student or equivalent.
@@ -17,6 +21,7 @@ Source code: https://github.com/michaellee8/idp-public-notes
 - Has learnt basic interaction with Arduino sensors.
 
 ---
+
 # Topics
 
 - Arduino's programming model
@@ -27,24 +32,27 @@ Source code: https://github.com/michaellee8/idp-public-notes
 - Basic debugging skills
 
 ---
+
 # Basic vs Advanced
 
-Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots of very useful but not essential stuffs there.
+Advanced topic will be discussed at https://advanced.idp.michaellee8.com . Lots of very useful but not essential stuffs there.
 
 - Some suggestions given in basic slides are only good for the scope of this course since the codebase is rather simple, or have limitations.
 - Will have better or more correct way discussed in advanced.
 - Those suggestions will be tagged with :star:.
 
 ---
-# Arduino's programming model
 
-[![bg left:25% 60%](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzZXR1cFtzZXR1cF1cbiAgICBsb29wW2xvb3BdXG5cbiAgICBzZXR1cCAtLT4gbG9vcFxuICAgIGxvb3AgLS0-IGxvb3BcbiAgIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)](https://mermaid-js.github.io/mermaid-live-editor/edit#eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzZXR1cFtzZXR1cF1cbiAgICBsb29wW2xvb3BdXG5cbiAgICBzZXR1cCAtLT4gbG9vcFxuICAgIGxvb3AgLS0-IGxvb3BcbiAgIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0)
+# Arduino's programming model
 
 - Perform setup like initializing sensors, motors and serial in `setup()` once only.
 - Program in `loop()` will be executed forever, use it to implement your own program logic and recurring tasks like reading values.
 - Share variables between `setup()` and `loop()` by making them global variable. :star:
 
+<Chart1 />
+
 ---
+
 # Basic code organization
 
 - Seperate big trunks of code for different tasks into different functions.
@@ -58,6 +66,8 @@ Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots o
 Seperating tasks
 
 ---
+
+<CodeSurfer>
 
 ```cpp
 void readUltrasonicSensorValues(){
@@ -79,11 +89,15 @@ void loop(){
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 Global variables and Constants
 
 ---
+
+<CodeSurfer>
 
 ```cpp
 const float STOP_SENSOR_DISTANCE = 20.0;
@@ -102,11 +116,7 @@ void readSerialInput(){
   // processing
   shouldContinue = xxx;
 }
-```
 
----
-
-```cpp
 void determineWhatToDo(){
   if (sensorDistance <= STOP_SENSOR_DISTANCE && shouldContinue){
     motorSpeed = 100;
@@ -128,11 +138,15 @@ void loop(){
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 Program state and logging
 
 ---
+
+<CodeSurfer>
 
 ```cpp
 const float STOP_SENSOR_DISTANCE = 20.0;
@@ -169,11 +183,6 @@ void writeLogToSerial(){
   }
 }
 
-```
-
----
-
-```cpp
 void determineWhatToDo(){
   if (!shouldContinue){
     motorSpeed = 0;
@@ -204,6 +213,8 @@ void loop(){
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 # Coding conventions
@@ -214,9 +225,6 @@ void loop(){
 - Rember to put indentions properly. :star:
 - Use verbs for functions, and nouns for variables and classes.
 - Give meaningful names, e.g. `i` vs `motorIndex`.
-
----
-
 - Avoid using pointers (pass by reference instead). Arduino has very limited memories (8KB) so dynamic memory allocation can caused memory leakages. Also there are no OOM on Arduino, you won't know what broke your program. Hence prefer allocate on stack rather than heap. (There are also tools for analysing memory usages but obvously won't work with `new` or `malloc()` :star:.).
 - Use containers if you really need dynamic memory array like the built-in `String` or `Array`/`Vector` libraries.
 - Don't use exceptions (`throw`) (there are no exceptions in Arduino anyway).
@@ -250,18 +258,24 @@ void loop(){
 
 - Use CamelCase for class, structs and types
 
-```c++
+<CodeSurfer>
+
+```cpp
 TimedState
 BluetoothController
 UrlParaser
 I2cImpl
 ```
 
+</CodeSurfer>
+
 ---
 
 - Use camelCase for function names, the first word should be a verb ideally.
 
-```c++
+<CodeSurfer>
+
+```cpp
 readUltrasonicSensorValues();
 readSerialInput();
 determineWhatToDo();
@@ -270,24 +284,30 @@ getNextInput();
 setMotorSpeed();
 ```
 
+</CodeSurfer>
+
 ---
 
 - For functions parameters, global variables, function local variables and struct member variables, use snake_case.
 
-```c++
+<CodeSurfer>
+
+```cpp
 float convertToFloat(int num){
   bool is_positive;
 }
 ```
+
+</CodeSurfer>
 
 ---
 
 - For both static and instance class member variables, use snake*case with underscore (snake_case*).
 - Useful for differentiating between local variables and class member variables.
 
----
+<CodeSurfer>
 
-```c++
+```cpp
 class TimedState : public State {
  protected:
   bool is_entered_ = false;
@@ -305,13 +325,19 @@ void TimedState::forceEnter() {
 }
 ```
 
+</CodeSurfer>
+
 ---
 
 - Use snake_case for namespaces.
 
-```c++
+<CodeSurfer>
+
+```cpp
 namespace timed_state;
 ```
+
+</CodeSurfer>
 
 ---
 
@@ -319,20 +345,28 @@ namespace timed_state;
 - Avoid use of macros.
 - Some constants in the arduino ecosystem are defined using macros, follow macros conventions to name them if you have a reason to use one. However, you better use `const` style constants since it provice better type checking.
 
-```c++
+<CodeSurfer>
+
+```cpp
 #define ROUND(x) ...
 #define PI_ROUNDED 3.0
 ```
+
+</CodeSurfer>
 
 ---
 
 - Use `SNAKE_CASE`, which is capital letter with underscores for constants.
 - Some style guide wuggested otherwise, but I would have suggested using `SNAKE_CASE` since this is the convention in the Arduino ecosystem.
 
-```c++
+<CodeSurfer>
+
+```cpp
 const int BUTTON_PIN = 4;
 const float distance = 40.0;
 ```
+
+</CodeSurfer>
 
 ---
 
@@ -443,7 +477,14 @@ Result
 
 https://wokwi.com/arduino/projects/322041851103150676
 
-<video src="assets/button-only.mp4" controls autoPlay muted loop playsInline></video>
+<video
+  src="assets/button-only.mp4"
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+></video>
 
 ---
 
@@ -477,7 +518,14 @@ Result
 
 https://wokwi.com/arduino/projects/322079425233420882
 
-<video src="assets/blink-delay.mp4" controls autoPlay muted loop playsInline></video>
+<video
+  src="assets/blink-delay.mp4"
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+></video>
 
 ---
 
@@ -518,9 +566,17 @@ Result
 
 https://wokwi.com/arduino/projects/322081256635368020
 
-<video src="assets/blink-and-button-delay.mp4" controls autoPlay muted loop playsInline></video>
+<video
+  src="assets/blink-and-button-delay.mp4"
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+></video>
 
 ---
+
 Observations
 
 - When the button starts being held, the LED starts blinking after a small delay.
@@ -529,22 +585,25 @@ Observations
 - We need the LED to stop blinking when it is turned off. The current behavior is not desirable.
 
 ---
+
 Analysis
 
 - When the `delay(1000)` function is called, the program pause without doing anything for 1 second, hence the sensor input (button) will not be read and changes will not be reflected.
 - If the button is pressed during the first `delay(1000);` call, then the `digitalWrite(LED_PIN, LOW);` line that turns off the LED will still be executed, hence the `if (buttonPressed) {` condition would still be false and the `loop()` function would return, in which the `loop()` function would be reentered again, the `buttonPressed` condition would be `true`, and the LED will be turned on after two seconds of delay.
 
 ---
+
 Analysis
 
 - If the button is released during the second `delay(1000);` call, then the `digitalWrite(LED_PIN, HIGH);` line would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after 1 second.
 - A graph will be displayed below to provide you with a better illustraion if you hate text.
 
 ---
+
 Program flowchart
 
 [![bg contain 90%](https://mermaid.ink/img/pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)](https://mermaid.live/edit#pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)
 
 ---
-Program flow when the button was initally released, and started being pressed during the first `delay(1000)`
 
+Program flow when the button was initally released, and started being pressed during the first `delay(1000)`

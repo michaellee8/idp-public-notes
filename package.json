@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@mdx-deck/gatsby-plugin": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?60a52eeadb9ee",
-    "mdx-deck": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?60a52eeadb9ee"
+    "code-surfer": "^3.1.1",
+    "mdx-deck": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?60a52eeadb9ee",
+    "mdx-mermaid": "^1.2.1",
+    "mermaid": "^8.13.10"
   }
 }
