@@ -3,6 +3,11 @@
     "@marp-team/marp-cli": "^1.5.2"
   },
   "scripts": {
-    "marp": "marp"
+    "marp": "marp",
+    "mdx-deck": "mdx-deck",
+    "start:basic": "mdx-deck basic/main.mdx"
+  },
+  "dependencies": {
+    "mdx-deck": "^4.1.1"
   }
 }

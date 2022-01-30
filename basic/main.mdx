@@ -1,10 +1,6 @@
----
-marp: true
-theme: gaia
-_class: lead
-backgroundColor: #fff
-backgroundImage: url('https://marp.app/assets/hero-background.svg')
----
+import { book } from '@mdx-deck/themes'
+
+export const theme = { ...book }
 
 # Introduction to basic Arduino programming techniques
 
@@ -13,9 +9,6 @@ https://basic.idp.michaellee8.com
 Source code: https://github.com/michaellee8/idp-public-notes
 
 ---
-
-<!-- paginate: true -->
-
 # Assumptions
 
 - Expecting understanding to programming of a yr3 or yr4 CE student or equivalent.
@@ -24,7 +17,6 @@ Source code: https://github.com/michaellee8/idp-public-notes
 - Has learnt basic interaction with Arduino sensors.
 
 ---
-
 # Topics
 
 - Arduino's programming model
@@ -35,7 +27,6 @@ Source code: https://github.com/michaellee8/idp-public-notes
 - Basic debugging skills
 
 ---
-
 # Basic vs Advanced
 
 Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots of very useful but not essential stuffs there.
@@ -45,7 +36,6 @@ Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots o
 - Those suggestions will be tagged with :star:.
 
 ---
-
 # Arduino's programming model
 
 [![bg left:25% 60%](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzZXR1cFtzZXR1cF1cbiAgICBsb29wW2xvb3BdXG5cbiAgICBzZXR1cCAtLT4gbG9vcFxuICAgIGxvb3AgLS0-IGxvb3BcbiAgIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlfQ)](https://mermaid-js.github.io/mermaid-live-editor/edit#eyJjb2RlIjoiZ3JhcGggVERcbiAgICBzZXR1cFtzZXR1cF1cbiAgICBsb29wW2xvb3BdXG5cbiAgICBzZXR1cCAtLT4gbG9vcFxuICAgIGxvb3AgLS0-IGxvb3BcbiAgIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0)
@@ -55,7 +45,6 @@ Advanced topic will be discussed at https://advanced.idp.michaellee8.com. Lots o
 - Share variables between `setup()` and `loop()` by making them global variable. :star:
 
 ---
-
 # Basic code organization
 
 - Seperate big trunks of code for different tasks into different functions.
@@ -454,7 +443,7 @@ Result
 
 https://wokwi.com/arduino/projects/322041851103150676
 
-<video src="assets/button-only.mp4" controls autoplay muted loop playsinline></video>
+<video src="assets/button-only.mp4" controls autoPlay muted loop playsInline></video>
 
 ---
 
@@ -488,7 +477,7 @@ Result
 
 https://wokwi.com/arduino/projects/322079425233420882
 
-<video src="assets/blink-delay.mp4" controls autoplay muted loop playsinline></video>
+<video src="assets/blink-delay.mp4" controls autoPlay muted loop playsInline></video>
 
 ---
 
@@ -529,7 +518,7 @@ Result
 
 https://wokwi.com/arduino/projects/322081256635368020
 
-<video src="assets/blink-and-button-delay.mp4" controls autoplay muted loop playsinline></video>
+<video src="assets/blink-and-button-delay.mp4" controls autoPlay muted loop playsInline></video>
 
 ---
 Observations
