@@ -1,5 +1,6 @@
 import book from "../themes/book"
 import { Chart1 } from "./components/chart1.jsx"
+import { Chart2 } from "./components/chart2.jsx"
 import { CodeSurfer } from "code-surfer"
 import { dracula } from "@code-surfer/themes"
 import { assetUrl } from "../themes/const"
@@ -605,21 +606,16 @@ Observations
 
 Analysis
 
-- When the `delay(1000)` function is called, the program pause without doing anything for 1 second, hence the sensor input (button) will not be read and changes will not be reflected.
-- If the button is pressed during the first `delay(1000);` call, then the `digitalWrite(LED_PIN, LOW);` line that turns off the LED will still be executed, hence the `if (buttonPressed) {` condition would still be false and the `loop()` function would return, in which the `loop()` function would be reentered again, the `buttonPressed` condition would be `true`, and the LED will be turned on after two seconds of delay.
-
----
-
-Analysis
-
-- If the button is released during the second `delay(1000);` call, then the `digitalWrite(LED_PIN, HIGH);` line would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after 1 second.
+- When the `delay(1000)` function in `L12` and `L15` is called, the program pause without doing anything for 1 second, hence the sensor input (button) will not be read and changes will not be reflected.
+- If the button is pressed during `delay()` in `L12`, then the `L13` that turns off the LED will still be executed, hence the `L14` would still be false and the `loop()` function would return, in which the `loop()` function would be reentered again, `L14` would be `true`, and the LED will be turned on after two seconds of delay.
+- If the button is released during `delay()` in `L15`, then `L16` would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after another 1 second.
 - A graph will be provided after to provide you with a better illustraion if you hate text.
 
 ---
 
 Program flowchart
 
-[![bg contain 90%](https://mermaid.ink/img/pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)](https://mermaid.live/edit#pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)
+<Chart2/>
 
 ---
 
