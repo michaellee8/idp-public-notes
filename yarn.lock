@@ -1504,9 +1504,9 @@
     markdown-it-front-matter "^0.2.3"
     postcss "^8.4.5"
 
-"@mdx-deck/gatsby-plugin@^4.1.1", "@mdx-deck/gatsby-plugin@https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?6691ab0f7c60ce3cf2ede65566e07b189871495a":
+"@mdx-deck/gatsby-plugin@^4.1.1", "@mdx-deck/gatsby-plugin@https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?60a52eeadb9ee":
   version "4.1.1"
-  resolved "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?6691ab0f7c60ce3cf2ede65566e07b189871495a#a38440d1b87b7dc030c6b43e1be82afb681dc627"
+  resolved "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?60a52eeadb9ee#144e2b95e19999f551d8d6506ea70a0e4d975c34"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.36"
     "@fortawesome/free-solid-svg-icons" "^5.15.4"
@@ -8610,9 +8610,9 @@ mdurl@^1.0.0, mdurl@^1.0.1:
   resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
   integrity sha1-/oWy7HWlkDfyrf7BAP1sYBdhFS4=
 
-"mdx-deck@https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?6691ab0f7c60ce3cf2ede65566e07b189871495a":
+"mdx-deck@https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?60a52eeadb9ee":
   version "4.1.1"
-  resolved "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?6691ab0f7c60ce3cf2ede65566e07b189871495a#28d5b751c360a05b26e72e0814392b72a12cf778"
+  resolved "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?60a52eeadb9ee#e3104b35e4e926949b8abc6d35f583cb57ef6d83"
   dependencies:
     "@mdx-deck/gatsby-plugin" "^4.1.1"
     "@mdx-deck/themes" "^4.1.0"

@@ -8,7 +8,7 @@
     "start:basic": "mdx-deck basic/main.mdx"
   },
   "dependencies": {
-    "@mdx-deck/gatsby-plugin": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?6691ab0f7c60ce3cf2ede65566e07b189871495a",
-    "mdx-deck": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?6691ab0f7c60ce3cf2ede65566e07b189871495a"
+    "@mdx-deck/gatsby-plugin": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/gatsby-plugin?60a52eeadb9ee",
+    "mdx-deck": "https://gitpkg.now.sh/michaellee8/mdx-deck/packages/mdx-deck?60a52eeadb9ee"
   }
 }
