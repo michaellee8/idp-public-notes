@@ -1,6 +1,8 @@
 import book from "../themes/book"
 import { Chart1 } from "./components/chart1.jsx"
 import { Chart2 } from "./components/chart2.jsx"
+import { Chart3 } from "./components/chart3.jsx"
+import { Chart4 } from "./components/chart4.jsx"
 import { CodeSurfer } from "code-surfer"
 import { dracula } from "@code-surfer/themes"
 import { assetUrl } from "../themes/const"
@@ -618,5 +620,100 @@ Program flowchart
 ---
 
 Program flow when the button was initally released, and started being pressed during the first `delay(1000)`
+
+---
+
+### Blink + Button with millis()
+
+---
+
+<CodeSurfer>
+
+```cpp 
+
+const byte button=4;
+const byte LED=13;
+ 
+unsigned long Interval = 1000; 
+unsigned long currentMillis; 
+ 
+void setup() {
+ pinMode(button, INPUT_PULLUP);
+ pinMode(LED, OUTPUT);
+}
+ 
+void loop() {
+ if (digitalRead(button)==LOW  ){
+     currentMillis = millis(); 
+     if ((currentMillis/Interval)%2 != 0  ) { 
+       digitalWrite(LED, HIGH); 
+       }
+      else{
+         digitalWrite(LED, LOW); 
+      }
+
+ }
+
+ if (digitalRead(button)==HIGH){
+   digitalWrite(LED, LOW);  
+
+ }
+
+}
+
+
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/projects/327387810779628116
+
+
+---
+
+### Blink + Button with TimedState
+
+---
+<CodeSurfer>
+
+```cpp 
+
+#include <TimedState.h>
+
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+RepeatingTimedState led_should_blink(1000, 1000, true);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  led_should_blink.enter();
+}
+
+void loop() {
+  int buttonPressed = !digitalRead(BUTTON_PIN);
+  if (buttonPressed && led_should_blink.isInside()){
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+}
+
+
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/projects/327109378634154579
 
 ---
