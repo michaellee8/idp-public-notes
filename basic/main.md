@@ -532,6 +532,7 @@ https://wokwi.com/arduino/projects/322081256635368020
 <video src="assets/blink-and-button-delay.mp4" controls autoplay muted loop playsinline></video>
 
 ---
+
 Observations
 
 - When the button starts being held, the LED starts blinking after a small delay.
@@ -540,22 +541,98 @@ Observations
 - We need the LED to stop blinking when it is turned off. The current behavior is not desirable.
 
 ---
+
 Analysis
 
 - When the `delay(1000)` function is called, the program pause without doing anything for 1 second, hence the sensor input (button) will not be read and changes will not be reflected.
 - If the button is pressed during the first `delay(1000);` call, then the `digitalWrite(LED_PIN, LOW);` line that turns off the LED will still be executed, hence the `if (buttonPressed) {` condition would still be false and the `loop()` function would return, in which the `loop()` function would be reentered again, the `buttonPressed` condition would be `true`, and the LED will be turned on after two seconds of delay.
 
 ---
+
 Analysis
 
 - If the button is released during the second `delay(1000);` call, then the `digitalWrite(LED_PIN, HIGH);` line would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after 1 second.
 - A graph will be displayed below to provide you with a better illustraion if you hate text.
 
 ---
+
 Program flowchart
 
 [![bg contain 90%](https://mermaid.ink/img/pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)](https://mermaid.live/edit#pako:eNp1kU1rwzAMhv-K0Lk9tMcctkt6KJStdGMw6h20WF4DiR38MSgh_31KmqVp2XwSel7plawWC6cZM_zy1Jxgd1AW5B2Y9BtViY9K9TEEtsF5-O5zSn1cVDlXdF4d95QCgxG8El3hrJ7z9f_8NXn7bMWiD8BZ2G3yqfkAjZmoMTd4G_aeQ2DdbgN8philvLlkHjtl79aA5fJhHHc--pAejW5cBzBZ3DkKhHcO157r-brXnvaPuic38Gmw-UfcElxgzb6mUst12l6nMJ64ZoWZhJoNpSoqVLYTaWo0Rd7oMjqPmaEq8AIpRfdytgVm0Sf-FeUlybHrUdX9AMEUprA)
 
 ---
+
 Program flow when the button was initally released, and started being pressed during the first `delay(1000)`
+
+---
+
+### Blink + Button with millis()
+
+---
+
+```c++
+const byte button=4;
+const byte LED=13;
+
+unsigned long Interval = 1000;
+unsigned long currentMillis;
+unsigned long previousMillis;
+
+void setup() {
+ pinMode(button, INPUT_PULLUP);
+ pinMode(LED, OUTPUT);
+}
+
+void loop() {
+ if (digitalRead(button)==LOW  ){
+     currentMillis = millis();
+     if ((currentMillis/Interval)%2 != 0  ) {
+       digitalWrite(LED, HIGH);
+       }
+      else{
+         digitalWrite(LED, LOW);
+      }
+ }
+
+ if (digitalRead(button)==HIGH){
+   digitalWrite(LED, LOW);
+ }
+
+}
+
+```
+
+---
+
+### Blink + Button with TimedState
+
+---
+
+```c++
+#include <TimedState.h>
+
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+RepeatingTimedState led_should_blink(1000, 1000, true);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  led_should_blink.enter();
+}
+
+void loop() {
+  int buttonPressed = !digitalRead(BUTTON_PIN);
+  if (buttonPressed && led_should_blink.isInside()){
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+}
+
+```
+
+---
 
