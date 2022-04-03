@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "michaellee8-com"
+  },
+  "targets": {
+    "michaellee8-com": {
+      "hosting": {
+        "basic-idp": [
+          "basic-idp-michaellee8-com"
+        ]
+      }
+    }
+  }
+}

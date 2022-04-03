@@ -1,0 +1,737 @@
+import book from "../themes/book"
+import { Chart1 } from "./components/chart1.jsx"
+import { Chart2 } from "./components/chart2.jsx"
+import { Chart3 } from "./components/chart3.jsx"
+import { Chart4 } from "./components/chart4.jsx"
+import { CodeSurfer } from "code-surfer"
+import { dracula } from "@code-surfer/themes"
+import { assetUrl } from "../themes/const"
+
+export const theme = { ...book, ...dracula }
+
+# Introduction to basic Arduino programming techniques
+
+https://basic.idp.michaellee8.com
+
+Source code: https://github.com/michaellee8/idp-public-notes
+
+---
+
+# Assumptions
+
+- Expecting understanding to programming of a yr3 or yr4 CE student or equivalent.
+- Has basic understanding to C++.
+- Has basic concepts to Arduino hardware.
+- Has learnt basic interaction with Arduino sensors.
+
+---
+
+# Topics
+
+- Arduino's programming model
+- Basic code organization and conventions
+- Sampling
+- Non-blocking control (no `delay()`)
+
+---
+
+# Basic vs Advanced
+
+Advanced topic will be discussed at https://advanced.idp.michaellee8.com . Lots of very useful but not essential stuffs there.
+
+- Some suggestions given in basic slides are only good for the scope of this course since the codebase is rather simple, or have limitations.
+- Will have better or more correct way discussed in advanced.
+- Those suggestions will be tagged with :star:.
+
+---
+
+# Arduino's programming model
+
+- Perform setup like initializing sensors, motors and serial in `setup()` once only.
+- Program in `loop()` will be executed forever, use it to implement your own program logic and recurring tasks like reading values.
+- Share variables between `setup()` and `loop()` by making them global variable. :star:
+
+<Chart1 />
+
+---
+
+# Basic code organization
+
+- Seperate big trunks of code for different tasks into different functions.
+- Use global variables for sharing data between functions. :star:
+- Define constants for hard-coded numbers used in the program, don't put them directly code, for easier tuning later.
+- Log sensor values, program state and motor output for easier debugging.
+- Write verbosive comments when you think you need it. More is better.
+
+---
+
+Seperating tasks
+
+---
+
+<CodeSurfer>
+
+```cpp
+void readUltrasonicSensorValues(){
+  // Read sensor values here
+}
+
+void readSerialInput(){
+  // Read serial input here
+}
+
+void determineWhatToDo(){
+  // Run program logic here.
+}
+
+void loop(){
+  readUltrasonicSensorValues();
+  readSerialInput();
+  determineWhatToDo();
+}
+```
+
+</CodeSurfer>
+
+---
+
+Global variables and Constants
+
+---
+
+<CodeSurfer>
+
+```cpp
+const float STOP_SENSOR_DISTANCE = 20.0;
+const int MOTOR_PIN = A4;
+
+float sensorDistance;
+bool shouldContinue;
+int motorSpeed;
+
+void readUltrasonicSensorValues(){
+  // processing
+  sensorDistance = xxx;
+}
+
+void readSerialInput(){
+  // processing
+  shouldContinue = xxx;
+}
+
+void determineWhatToDo(){
+  if (sensorDistance <= STOP_SENSOR_DISTANCE && shouldContinue){
+    motorSpeed = 100;
+  }else{
+    motorSpeed = 0;
+  }
+}
+
+void writeMotorSpeed(){
+  analogWrite(MOTOR_PIN, motorSpeed);
+}
+
+void loop(){
+  readUltrasonicSensorValues();
+  readSerialInput();
+  determineWhatToDo();
+  writeMotorSpeed();
+  writeLogToSerial();
+}
+```
+
+</CodeSurfer>
+
+---
+
+Program state and logging
+
+---
+
+<CodeSurfer>
+
+```cpp
+const float STOP_SENSOR_DISTANCE = 20.0;
+const float RUN_SENSOR_DISTANCE = 60.0;
+
+float sensorDistance;
+bool shouldContinue;
+int motorSpeed;
+
+ProgramState currentState;
+
+enum class ProgramState : char { // Only integral type like int or char is allowed because of C++ limitations
+  RUNNING = "R",
+  MOVING = "M",
+  TOO_CLOSE = "C",
+  STOPPED_BY_SERIAL = "S"
+};
+
+void writeLogToSerial(){
+  // Log current program state to serial input here.
+  // Note that Serial output can block if the output buffer is full! Will introduce some techniques to deal with it later.
+  // Fow now we only write if the buffer is not full. If the buffer is not full but still doesn't have enough space it still blocks.
+  if (Serial.availableForWrite() > 0){
+    Serial.print(',');
+    Serial.print(motorSpeed);
+    Serial.print(currentState);
+    Serial.print(',');
+    Serial.print(motorSpeed);
+    Serial.print(',');
+    Serial.print(sensorDistance);
+    Serial.print(',');
+    Serial.print(shouldContinue);
+    Serial.println();
+  }
+}
+
+void determineWhatToDo(){
+  if (!shouldContinue){
+    motorSpeed = 0;
+    currentState = ProgramState::STOPPED_BY_SERIAL;
+    return;
+  }
+  if (sensorDistance > RUN_SENSOR_DISTANCE){
+    motorSpeed = 200;
+    currentState = ProgramState::RUNNING;
+    return;
+  }
+  if (sensorDistance > STOP_SENSOR_DISTANCE){
+    motorSpeed = 100;
+    currentSpeed = ProgramState::MOVING;
+    return;
+  }
+  motorSpeed = 0;
+  currentSpeed = ProgramState::TOO_CLOSE;
+  return;
+}
+
+
+void loop(){
+  readUltrasonicSensorValues();
+  readSerialInput();
+  determineWhatToDo();
+  writeLogToSerial();
+}
+```
+
+</CodeSurfer>
+
+---
+
+# Coding conventions
+
+- Document what you are doing with comments for each function (intentions) if it is not obvious.
+- Don't repeat code (actual logic) with comments.
+- Adapt a consistent naming style.
+- Rember to put indentions properly. :star:
+- Use verbs for functions, and nouns for variables and classes.
+- Give meaningful names, e.g. `i` vs `motorIndex`.
+- Avoid using pointers (pass by reference instead). Arduino has very limited memories (8KB) so dynamic memory allocation can caused memory leakages. Also there are no OOM on Arduino, you won't know what broke your program. Hence prefer allocate on stack rather than heap. (There are also tools for analysing memory usages but obvously won't work with `new` or `malloc()` :star:.).
+- Use containers if you really need dynamic memory array like the built-in `String` or `Array`/`Vector` libraries.
+- Don't use exceptions (`throw`) (there are no exceptions in Arduino anyway).
+- You MAY want to use early return to code branches to achieve cleaner code. See the `determineWhatToDo()` example above.
+
+---
+
+## Suggested style guide
+
+- Adapted from [Google C++ style guide](https://google.github.io/styleguide/cppguide.html#Variable_Names).
+- Modified to match existing conventions in the arduino ecosystem.
+- You don't have to follow this, just make sure it is consistent across your group members' code.
+
+---
+
+### Formatting
+
+- 2 spaces for each level.
+- Don't use tabs.
+- Each line should not exceed 80 chars.
+- Use clang-format :star:.
+- Namespaces doesn't need indentions.
+
+---
+
+### Naming
+
+- Make sure the naming will be understandable even read by people not in your group.
+
+---
+
+- Use CamelCase for class, structs and types
+
+<CodeSurfer>
+
+```cpp
+TimedState
+BluetoothController
+UrlParaser
+I2cImpl
+```
+
+</CodeSurfer>
+
+---
+
+- Use camelCase for function names, the first word should be a verb ideally.
+
+<CodeSurfer>
+
+```cpp
+readUltrasonicSensorValues();
+readSerialInput();
+determineWhatToDo();
+writeLogToSerial();
+getNextInput();
+setMotorSpeed();
+```
+
+</CodeSurfer>
+
+---
+
+- For functions parameters, global variables, function local variables and struct member variables, use snake_case.
+
+<CodeSurfer>
+
+```cpp
+float convertToFloat(int num){
+  bool is_positive;
+}
+```
+
+</CodeSurfer>
+
+---
+
+- For both static and instance class member variables, use snake*case with underscore (snake_case*).
+- Useful for differentiating between local variables and class member variables.
+
+<CodeSurfer>
+
+```cpp
+class TimedState : public State {
+ protected:
+  bool is_entered_ = false;
+
+ public:
+  TimedState(unsigned long period);
+  void forceEnter() override;
+};
+
+TimedState::TimedState(unsigned long period) : period_(period) {}
+
+void TimedState::forceEnter() {
+  is_entered_ = true;
+  timestamp_ = millis();
+}
+```
+
+</CodeSurfer>
+
+---
+
+- Use snake_case for namespaces.
+
+<CodeSurfer>
+
+```cpp
+namespace timed_state;
+```
+
+</CodeSurfer>
+
+---
+
+- Use capital letter with underscores for macros.
+- Avoid use of macros.
+- Some constants in the arduino ecosystem are defined using macros, follow macros conventions to name them if you have a reason to use one. However, you better use `const` style constants since it provice better type checking.
+
+<CodeSurfer>
+
+```cpp
+#define ROUND(x) ...
+#define PI_ROUNDED 3.0
+```
+
+</CodeSurfer>
+
+---
+
+- Use `SNAKE_CASE`, which is capital letter with underscores for constants.
+- Some style guide wuggested otherwise, but I would have suggested using `SNAKE_CASE` since this is the convention in the Arduino ecosystem.
+
+<CodeSurfer>
+
+```cpp
+const int BUTTON_PIN = 4;
+const float distance = 40.0;
+```
+
+</CodeSurfer>
+
+---
+
+Some references
+
+https://llvm.org/docs/CodingStandards.html#name-types-functions-variables-and-enumerators-properly
+https://google.github.io/styleguide/cppguide.html#Variable_Names
+
+---
+
+# Sampling
+
+- Some sensors has pretty large error margins (e.g. ultrasonic sensors).
+- Just one measurement may get you a wrong value.
+- Solution: Take measurements from the sensor multiple times, sort the values, and then take the median.
+- Let's use [`qsort()`](https://www.nongnu.org/avr-libc/user-manual/group__avr__stdlib.html#gafd4bf2faec43342e7ad3d2ab37bac1fe) to do it.
+
+---
+
+<CodeSurfer>
+
+```cpp
+#define SAMPLE_SIZE 5
+// Using macro-based constants here since we need this constant to define array size.
+
+const int SONIC_ECHO_PIN = A10;
+const int SONIC_TRIG_PIN = A11;
+
+unsigned long measureSensorDurationOnce(){
+  digitalWrite(SONIC_TRIG_PIN, LOW);
+  delayMicroseconds(5);
+  digitalWrite(SONIC_TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(SONIC_TRIG_PIN, LOW);
+  return pulseIn(SONIC_TRIG_PIN);
+}
+
+float mesaureSensorDistanceWithSampling(){
+  unsigned long durations[SAMPLE_SIZE];
+  for (int i = 0; i < SAMPLE_SIZE; i++){
+    durations[i] = measureSensorDurationOnce();
+  }
+  qsort((void*)durations, SAMPLE_SIZE, sizeof(unsigned long), lessThanUul);
+  unsigned long duration = durations[SAMPLE_SIZE / 2];
+  return duration / 2.0 / 29.1;
+}
+
+int lessThanUul(const void* p1, const void* p2){
+  unsigned long n1 = *((unsigned long*)p1);
+  unsigned long n2 = *((unsigned long*)p2);
+  if (n1 < n2){
+    return -1;
+  }
+  if (n1 > n2){
+    return 1;
+  }
+  return 0;
+}
+```
+
+</CodeSurfer>
+
+---
+
+# Non-blocking control
+
+---
+
+## What is delay()?
+
+- Stops the execution of the Arduino program for the specified period.
+- No sensors can be measured.
+- You can only "do one thing" with it.
+
+---
+
+## Simple scenario
+
+Blinks the LED in an one second interval if the button is pressed, otherwise turn the LED off.
+
+<img src={assetUrl("assets/non-blocking-example-circuit.png")} />
+
+---
+
+Let's try doing one thing only first.
+
+---
+
+### Button only
+
+Turn the LED on if the button is pressed, otherwise turn it off.
+
+<CodeSurfer>
+
+```cpp showNumbers
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int buttonValue = digitalRead(BUTTON_PIN);
+  digitalWrite(LED_PIN, !buttonValue);
+}
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/arduino/projects/322041851103150676
+
+<video
+  src={assetUrl("assets/button-only.mp4")}
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+></video>
+
+---
+
+### Blink only with delay
+
+Just Blink the LED in an one second interval only, ignore button input.
+
+---
+
+<CodeSurfer>
+
+```cpp showNumbers
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  delay(1000);
+  digitalWrite(LED_PIN, HIGH);
+}
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/arduino/projects/322079425233420882
+
+<video
+  src={assetUrl("assets/blink-delay.mp4")}
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+></video>
+
+---
+
+### Blink + Button with delay
+
+- Looks like we can do blinking with just `delay()` right?
+- But can we use button to control it if we use `delay()` only?
+- `delay()` is blocking, which means the board will no longer sensetive to changes in sensor input when it is waiting for `delay()`.
+- How would this "blocking" thing affect our implementation?
+
+---
+
+<CodeSurfer>
+
+```cpp showNumbers
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int buttonPressed = !digitalRead(BUTTON_PIN);
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  if (buttonPressed) {
+    delay(1000);
+    digitalWrite(LED_PIN, HIGH);
+  }
+}
+
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/arduino/projects/322081256635368020
+
+<video
+  src={assetUrl("assets/blink-and-button-delay.mp4")}
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+></video>
+
+---
+
+Observations
+
+- When the button starts being held, the LED starts blinking after a small delay.
+- When the button is being held, the LED blinks contiuously.
+- When the button is released, the LED stills blinks for the last cycle.
+- We need the LED to stop blinking when it is turned off. The current behavior is not desirable.
+
+---
+
+Analysis
+
+- When the `delay(1000)` function in `L12` and `L15` is called, the program pause without doing anything for 1 second, hence the sensor input (button) will not be read and changes will not be reflected.
+- If the button is pressed during `delay()` in `L12`, then the `L13` that turns off the LED will still be executed, hence the `L14` would still be false and the `loop()` function would return, in which the `loop()` function would be reentered again, `L14` would be `true`, and the LED will be turned on after two seconds of delay.
+- If the button is released during `delay()` in `L15`, then `L16` would still be executed, hence the LED light is turned on, then the `loop()` function will be executed again and the LED light will be turned off after another 1 second.
+- A graph will be provided after to provide you with a better illustraion if you hate text.
+
+---
+
+Program flowchart
+
+<Chart2 />
+
+Program flow when the button was initally released, and started being pressed during the first `delay(1000)`
+
+---
+
+### Blink + Button with millis()
+
+---
+
+<CodeSurfer>
+
+```cpp
+
+const byte button=4;
+const byte LED=13;
+
+unsigned long Interval = 1000;
+unsigned long currentMillis;
+
+void setup() {
+ pinMode(button, INPUT_PULLUP);
+ pinMode(LED, OUTPUT);
+}
+
+void loop() {
+ if (digitalRead(button) == LOW  ){
+     currentMillis = millis();
+     if ((currentMillis/Interval) %2 != 0  ) {
+       digitalWrite(LED, HIGH);
+       }
+      else{
+         digitalWrite(LED, LOW);
+      }
+
+ }
+
+ if (digitalRead(button)==HIGH){
+   digitalWrite(LED, LOW);
+
+ }
+
+}
+
+
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/projects/327387810779628116
+
+---
+
+### Blink + Button with TimedState
+
+---
+
+The previous code with millis would be a little bit hard to read,
+so let's use a wrapper library for better logic.
+
+Install `TimedState` from your Arduino IDE or Wokwi simulator.
+
+---
+
+<CodeSurfer>
+
+```cpp
+
+#include <TimedState.h>
+
+const int BUTTON_PIN = 4;
+const int LED_PIN = 13;
+
+RepeatingTimedState led_should_blink(1000, 1000, true);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  led_should_blink.enter();
+}
+
+void loop() {
+  int buttonPressed = !digitalRead(BUTTON_PIN);
+  if (buttonPressed && led_should_blink.isInside()){
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+}
+
+
+```
+
+</CodeSurfer>
+
+---
+
+Result
+
+https://wokwi.com/projects/327109378634154579
+
+Much cleaner code with the timing logic being battle tested already.
+
+---
+
+Hope you guys can benefit from this note!
+
+Feel free to ask me if you have questions by joining this telegram group:
+https://t.me/+497_nk6Uj7RmM2U1
+
+---
+
+THE END
+
+Special thanks to Dora writing the final parts.

@@ -1,2 +1,6 @@
 build/
 node_modules/
+*.html
+public/
+
+.DS_Store
