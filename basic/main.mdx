@@ -449,7 +449,7 @@ int lessThanUul(const void* p1, const void* p2){
 
 Blinks the LED in an one second interval if the button is pressed, otherwise turn the LED off.
 
-<img src={assetUrl("assets/non-blocking-example-circuit.png")}/>
+<img src={assetUrl("assets/non-blocking-example-circuit.png")} />
 
 ---
 
@@ -615,9 +615,7 @@ Analysis
 
 Program flowchart
 
-<Chart2/>
-
----
+<Chart2 />
 
 Program flow when the button was initally released, and started being pressed during the first `delay(1000)`
 
@@ -629,33 +627,33 @@ Program flow when the button was initally released, and started being pressed du
 
 <CodeSurfer>
 
-```cpp 
+```cpp
 
 const byte button=4;
 const byte LED=13;
- 
-unsigned long Interval = 1000; 
-unsigned long currentMillis; 
- 
+
+unsigned long Interval = 1000;
+unsigned long currentMillis;
+
 void setup() {
  pinMode(button, INPUT_PULLUP);
  pinMode(LED, OUTPUT);
 }
- 
+
 void loop() {
- if (digitalRead(button)==LOW  ){
-     currentMillis = millis(); 
-     if ((currentMillis/Interval)%2 != 0  ) { 
-       digitalWrite(LED, HIGH); 
+ if (digitalRead(button) == LOW  ){
+     currentMillis = millis();
+     if ((currentMillis/Interval) %2 != 0  ) {
+       digitalWrite(LED, HIGH);
        }
       else{
-         digitalWrite(LED, LOW); 
+         digitalWrite(LED, LOW);
       }
 
  }
 
  if (digitalRead(button)==HIGH){
-   digitalWrite(LED, LOW);  
+   digitalWrite(LED, LOW);
 
  }
 
@@ -672,15 +670,22 @@ Result
 
 https://wokwi.com/projects/327387810779628116
 
-
 ---
 
 ### Blink + Button with TimedState
 
 ---
+
+The previous code with millis would be a little bit hard to read,
+so let's use a wrapper library for better logic.
+
+Install `TimedState` from your Arduino IDE or Wokwi simulator.
+
+---
+
 <CodeSurfer>
 
-```cpp 
+```cpp
 
 #include <TimedState.h>
 
@@ -715,5 +720,18 @@ void loop() {
 Result
 
 https://wokwi.com/projects/327109378634154579
+
+Much cleaner code with the timing logic being battle tested already.
+
+---
+
+Hope you guys can benefit from this note!
+
+Feel free to ask me if you have questions by joining this telegram group:
+https://t.me/+497_nk6Uj7RmM2U1
+
+---
+
+Special thanks to Dora writing the final parts.
 
 ---
